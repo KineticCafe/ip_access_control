@@ -191,9 +191,11 @@ defmodule IpAccessControl do
   end
 
   def allowed?(remote_ip, allow_list) when is_tuple(remote_ip) do
+    encoded_ip = RemoteIp.Block.encode(remote_ip)
+
     allow_list
     |> parse_allow_list()
-    |> Enum.any?(&RemoteIp.Block.contains?(&1, RemoteIp.Block.encode(remote_ip)))
+    |> Enum.any?(&RemoteIp.Block.contains?(&1, encoded_ip))
   end
 
   def allowed?(_, _) do
