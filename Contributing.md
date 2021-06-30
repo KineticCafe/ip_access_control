@@ -1,6 +1,6 @@
 # Contributing
 
-We value any contribution to IPAccessControlPlug you can provide: a bug
+We value any contribution to IPAccessControl you can provide: a bug
 report, a feature request, or code contributions. Here are our guidelines for
 contributions:
 
@@ -18,7 +18,7 @@ contributions:
 Here's the most direct way to get your work merged into the project:
 
 - Fork the project.
-- Clone down your fork (`git clone git://github.com/<username>/ip_access_control_plug.git`).
+- Clone down your fork (`git clone git://github.com/<username>/ip_access_control.git`).
 - Create a topic branch to contain your change (`git checkout -b my_awesome_feature`).
 - Hack away, add tests. Not necessarily in that order.
 - Make sure everything still passes with `mix test`.
@@ -26,12 +26,12 @@ Here's the most direct way to get your work merged into the project:
 - Make sure the code is clean with `mix credo --strict`.
 - If necessary, rebase your commits into logical chunks, without errors.
 - Push the branch up (`git push origin my_awesome_feature`).
-- Create a pull request against KineticCafe/ip_access_control_plug and
+- Create a pull request against KineticCafe/ip_access_controland
   describe your change does and the why you think it should be merged.
 
 ## Contributors
 
-- Austin Ziegler created `ip_access_control_plug`, based in part on
+- Austin Ziegler created `ip_access_control`, based in part on
   [`plug_ip_whitelist`][] by Forward Financing.
 
 [quality commit messages]: http://tbaggery.com/2008/04/19/a-note-about-git-commit-messages.html

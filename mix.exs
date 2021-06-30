@@ -8,7 +8,7 @@ defmodule IpAccessControlPlug.MixProject do
 
   def project do
     [
-      app: :ip_access_control_plug,
+      app: :ip_access_control,
       version: @version,
       source_url: @project_url,
       homepage_url: @project_url,
@@ -36,7 +36,9 @@ defmodule IpAccessControlPlug.MixProject do
 
   # Specifies which paths to compile per environment.
   # defp elixirc_paths(:test), do: ["lib", "test/support"]
-  defp elixirc_paths(_), do: ["lib"]
+  defp elixirc_paths(_) do
+    ["lib"]
+  end
 
   defp package do
     [
@@ -51,8 +53,8 @@ defmodule IpAccessControlPlug.MixProject do
   defp docs do
     [
       source_ref: "v#{@version}",
-      canonical: "http://hexdocs.pm/ip_access_control_plug",
-      main: "IPAccessControlPlug",
+      canonical: "http://hexdocs.pm/ip_access_control",
+      main: "IPAccessControl",
       source_url: @project_url,
       extras: ["README.md", "Changelog.md", "Contributing.md", "Licence.md"]
     ]
@@ -61,13 +63,10 @@ defmodule IpAccessControlPlug.MixProject do
   defp deps do
     [
       {:plug, "~> 1.0"},
-      {:inet_cidr, "~> 1.0"},
+      {:remote_ip, "~> 1.0"},
       {:credo, "~> 1.0", only: [:dev], runtime: false},
       {:dialyxir, "~> 1.0.0-rc.6", only: [:dev], runtime: false},
-      ex_doc_dep(Version.compare(System.version(), "1.7.0"))
+      {:ex_doc, "~> 0.19", only: :dev, runtime: false}
     ]
   end
-
-  defp ex_doc_dep(:lt), do: {:ex_doc, "~> 0.18.0", only: :dev, runtime: false}
-  defp ex_doc_dep(_), do: {:ex_doc, "~> 0.19", only: :dev, runtime: false}
 end
