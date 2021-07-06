@@ -5,10 +5,10 @@ defmodule IpAccessControl.OptionsTest do
 
   alias IpAccessControl.Options
 
-  @parsed_v4 %RemoteIp.Block{mask: 4_294_967_295, net: 16_909_060, proto: :v4}
-  @parsed_v6 %RemoteIp.Block{
+  @parsed_v4 %BitwiseIp.Block{mask: 4_294_967_295, addr: 16_909_060, proto: :v4}
+  @parsed_v6 %BitwiseIp.Block{
     mask: 340_282_366_920_938_463_463_374_607_431_768_211_455,
-    net: 5_192_455_318_486_633_616_049_570_941_239_300,
+    addr: 5_192_455_318_486_633_616_049_570_941_239_300,
     proto: :v6
   }
 
@@ -240,7 +240,7 @@ defmodule IpAccessControl.OptionsTest do
     test "module: AllowOnly" do
       {packed, unpacked} = pack_unpack(module: AllowOnly)
 
-      assert [@parsed_v6, @parsed_v4] == unpacked[:allow]
+      assert [@parsed_v4, @parsed_v6] == unpacked[:allow]
       assert packed[:on_blocked] == unpacked[:on_blocked]
     end
 

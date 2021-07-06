@@ -44,6 +44,7 @@ defmodule IpAccessControl.Options do
   Pre-processes keyword options. Where possible, function resolution will be
   delayed until `unpack/1` is called.
   """
+  @spec pack(input_config()) :: config()
   def pack(options) do
     options = pack(options, :module)
 
@@ -56,6 +57,7 @@ defmodule IpAccessControl.Options do
   end
 
   @doc "Evaluate preprocessed options."
+  @spec unpack(config()) :: config()
   def unpack(options) do
     %{
       allow: unpack(options, :allow),
@@ -122,7 +124,9 @@ defmodule IpAccessControl.Options do
   end
 
   defp evaluate(:allow, allow_list) do
-    IpAccessControl.parse_allow_list(allow_list)
+    allow_list
+    |> IpAccessControl.parse_allow_list()
+    |> BitwiseIp.Blocks.optimize()
   end
 
   defp evaluate(_option, value) do

@@ -63,7 +63,7 @@ defmodule IpAccessControlPlug.MixProject do
   defp deps do
     [
       {:plug, "~> 1.0"},
-      {:remote_ip, "~> 1.0"},
+      {:bitwise_ip, "~> 0.1 or ~> 1.0", github: "ajvondrak/bitwise_ip"},
       {:credo, "~> 1.0", only: [:dev], runtime: false},
       {:dialyxir, "~> 1.0.0-rc.6", only: [:dev], runtime: false},
       {:ex_doc, "~> 0.19", only: :dev, runtime: false}
