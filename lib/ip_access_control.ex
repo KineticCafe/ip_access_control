@@ -110,21 +110,21 @@ defmodule IpAccessControl do
 
       def deps do
         {:ip_access_control, "~> 1.0"},
-        {:remote_ip, "~> 1.0"} # Optional
+        {:remote_ip, "~> 1.0"} # Required if behind a proxy
       end
   """
 
   alias Plug.Conn
 
-  @typep ip_block_list :: [%RemoteIp.Block{}, ...]
+  @typep ip_block_list :: BitwiseIp.Blocks.t()
 
   @doc "Initialize the plug with options."
-  @spec init(keyword) :: keyword
+  @spec init(IpAccessControl.Options.input_config()) :: IpAccessControl.Options.config()
   def init(options) do
     IpAccessControl.Options.pack(options)
   end
 
-  @spec call(Plug.Conn.t(), keyword) :: Plug.Conn.t()
+  @spec call(Conn.t(), IpAccessControl.Options.config()) :: Conn.t()
   def call(conn, options) do
     options = IpAccessControl.Options.unpack(options)
 
@@ -137,6 +137,7 @@ defmodule IpAccessControl do
     end
   end
 
+  @spec ip_access_on_blocked(Conn.t(), IpAccessControl.Options.config()) :: Conn.t()
   def ip_access_on_blocked(conn, options) do
     Conn.send_resp(conn, options[:response_code_on_blocked], options[:response_body_on_blocked])
   end
@@ -155,7 +156,7 @@ defmodule IpAccessControl do
   `false`.
   """
   @spec allowed?(
-          Plug.Conn.t() | binary() | :inet.ip_address() | nil,
+          Conn.t() | binary() | :inet.ip_address() | nil | BitwiseIp.t(),
           [binary(), ...] | (() -> [binary(), ...]) | ip_block_list() | nil
         ) ::
           boolean
@@ -179,23 +180,23 @@ defmodule IpAccessControl do
     allowed?(remote_ip, allow_fn.())
   end
 
-  def allowed?(%Plug.Conn{remote_ip: remote_ip}, allow_list) do
+  def allowed?(%Conn{remote_ip: remote_ip}, allow_list) do
     allowed?(remote_ip, allow_list)
   end
 
   def allowed?(remote_ip, allow_list) when is_binary(remote_ip) do
-    case :inet.parse_strict_address(to_charlist(remote_ip)) do
+    case BitwiseIp.parse(remote_ip) do
       {:ok, remote_ip} -> allowed?(remote_ip, allow_list)
       _ -> false
     end
   end
 
   def allowed?(remote_ip, allow_list) when is_tuple(remote_ip) do
-    encoded_ip = RemoteIp.Block.encode(remote_ip)
+    allowed?(BitwiseIp.encode(remote_ip), allow_list)
+  end
 
-    allow_list
-    |> parse_allow_list()
-    |> Enum.any?(&RemoteIp.Block.contains?(&1, encoded_ip))
+  def allowed?(%BitwiseIp{} = remote_ip, allow_list) do
+    BitwiseIp.Blocks.member?(parse_allow_list(allow_list), remote_ip)
   end
 
   def allowed?(_, _) do
@@ -206,8 +207,8 @@ defmodule IpAccessControl do
   def parse_allow_list(list) do
     Enum.map(list, fn item ->
       case item do
-        %RemoteIp.Block{} -> item
-        _ -> RemoteIp.Block.parse!(item)
+        %BitwiseIp.Block{} -> item
+        _ -> BitwiseIp.Block.parse!(item)
       end
     end)
   end

@@ -19,9 +19,7 @@ defmodule IpAccessControlPlug.MixProject do
       package: package(),
       elixirc_paths: elixirc_paths(Mix.env()),
       dialyzer: [
-        plt_apps: [:dialyzer, :elixir, :kernel, :mix, :stdlib],
-        ignore_warnings: ".dialyzer_ignore",
-        flags: [:unmatched_returns, :error_handling, :underspecs]
+        plt_file: {:no_warn, "priv/plts/dialyzer.plt"}
       ],
       deps: deps(),
       docs: docs()
@@ -29,9 +27,7 @@ defmodule IpAccessControlPlug.MixProject do
   end
 
   def application do
-    [
-      extra_applications: [:logger]
-    ]
+    [extra_applications: [:logger]]
   end
 
   # Specifies which paths to compile per environment.
@@ -63,9 +59,9 @@ defmodule IpAccessControlPlug.MixProject do
   defp deps do
     [
       {:plug, "~> 1.0"},
-      {:remote_ip, "~> 1.0"},
+      {:bitwise_ip, "~> 1.0"},
       {:credo, "~> 1.0", only: [:dev], runtime: false},
-      {:dialyxir, "~> 1.0.0-rc.6", only: [:dev], runtime: false},
+      {:dialyxir, "~> 1.1", only: [:dev], runtime: false},
       {:ex_doc, "~> 0.19", only: :dev, runtime: false}
     ]
   end
