@@ -64,8 +64,6 @@ defmodule IpAccessControl.OptionsTest do
     end
 
     test "allow captured function" do
-      expected = &test_allow_list/0
-
       assert is_function(Options.pack(allow: &test_allow_list/0)[:allow], 0)
     end
 

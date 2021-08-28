@@ -196,7 +196,7 @@ defmodule IpAccessControl do
   end
 
   def allowed?(%BitwiseIp{} = remote_ip, allow_list) do
-    BitwiseIp.Blocks.contain?(parse_allow_list(allow_list), remote_ip)
+    BitwiseIp.Blocks.member?(parse_allow_list(allow_list), remote_ip)
   end
 
   def allowed?(_, _) do

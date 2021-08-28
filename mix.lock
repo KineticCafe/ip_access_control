@@ -1,5 +1,5 @@
 %{
-  "bitwise_ip": {:git, "https://github.com/ajvondrak/bitwise_ip.git", "772ab2d09e2f8ddee9d089d258541a7365539ea2", []},
+  "bitwise_ip": {:hex, :bitwise_ip, "1.0.0", "0193c618d078ae606cf13194ae40cb9709b7de3e5e07a3e58c1acd7423db1351", [:mix], [], "hexpm", "87436527b22c3b579919031b732bd647c0ae4356bdd50f49258baafd2095d18d"},
   "bunt": {:hex, :bunt, "0.2.0", "951c6e801e8b1d2cbe58ebbd3e616a869061ddadcc4863d0a2182541acae9a38", [:mix], [], "hexpm", "7af5c7e09fe1d40f76c8e4f9dd2be7cebd83909f31fee7cd0e9eadc567da8353"},
   "combine": {:hex, :combine, "0.10.0", "eff8224eeb56498a2af13011d142c5e7997a80c8f5b97c499f84c841032e429f", [:mix], [], "hexpm", "1b1dbc1790073076580d0d1d64e42eae2366583e7aecd455d1215b0d16f2451b"},
   "credo": {:hex, :credo, "1.5.4", "9914180105b438e378e94a844ec3a5088ae5875626fc945b7c1462b41afc3198", [:mix], [{:bunt, "~> 0.2.0", [hex: :bunt, repo: "hexpm", optional: false]}, {:file_system, "~> 0.2.8", [hex: :file_system, repo: "hexpm", optional: false]}, {:jason, "~> 1.0", [hex: :jason, repo: "hexpm", optional: false]}], "hexpm", "cf51af45eadc0a3f39ba13b56fdac415c91b34f7b7533a13dc13550277141bc4"},
