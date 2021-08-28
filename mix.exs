@@ -3,12 +3,13 @@ defmodule IpAccessControlPlug.MixProject do
 
   use Mix.Project
 
-  @project_url "https://github.com/KineticCafe/bamboo_elastic_email"
+  @project_url "https://github.com/KineticCafe/ip_access_control_plug"
   @version "1.0.0"
 
   def project do
     [
       app: :ip_access_control,
+      description: "Restrict access to a Plug-based application using IP and CIDR access lists.",
       version: @version,
       source_url: @project_url,
       homepage_url: @project_url,
