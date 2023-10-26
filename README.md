@@ -20,7 +20,7 @@ dependency and configure that as well.
 ```elixir
 def deps do
   [
-    {:ip_access_control, "~> 1.0.0"},
+    {:ip_access_control, "~> 1.0.1"},
     {:remote_ip, "~> 1.0"} # Required if behind a proxy
   ]
 end

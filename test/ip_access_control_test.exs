@@ -8,9 +8,7 @@ defmodule IpAccessControlTest do
     %{allow: "10.0.0.0/24", good: ["10.0.0.0", "10.0.0.127", "10.0.0.255"], bad: ["10.0.1.0"]}
   ]
 
-  def call(conn, opts \\ []) do
-    IpAccessControl.call(conn, IpAccessControl.init(opts))
-  end
+  def call(conn, opts \\ []), do: IpAccessControl.call(conn, IpAccessControl.init(opts))
 
   describe "call/2" do
     for %{allow: allow, good: good, bad: bad} <- @data do
