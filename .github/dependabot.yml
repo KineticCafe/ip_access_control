@@ -1,0 +1,42 @@
+version: 2
+updates:
+  - package-ecosystem: npm
+    directory: /ts
+    schedule:
+      interval: monthly
+
+    groups:
+      ts-dev:
+        patterns:
+          - concurrently
+          - '@tsconfig/*'
+          - '@types/*'
+          - '@typescript-eslint/*'
+          - eslint
+          - 'eslint-plugin-*'
+          - prettier
+          - 'ts-*'
+          - tsup
+          - typedoc
+          - typescript
+          - vitest
+
+  - package-ecosystem: mix
+    directory: /elixir
+    schedule:
+      interval: monthly
+
+  - package-ecosystem: bundler
+    directory: /ruby
+    schedule:
+      interval: monthly
+
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: monthly
+
+    groups:
+      actions:
+        patterns:
+          - '*'

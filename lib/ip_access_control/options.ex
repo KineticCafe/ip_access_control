@@ -7,14 +7,14 @@ defmodule IpAccessControl.Options do
 
   @type input_config :: [
           module: module,
-          allow: (() -> [binary(), ...]) | [binary(), ...],
+          allow: (-> [binary(), ...]) | [binary(), ...],
           on_blocked: (Plug.Conn.t(), Plug.opts() -> Plug.Conn.t()) | module,
           response_code_on_blocked: integer(),
           response_body_on_blocked: String.t()
         ]
 
   @type config :: %{
-          allow: (() -> [binary(), ...]) | [binary(), ...],
+          allow: (-> [binary(), ...]) | [binary(), ...],
           on_blocked: (Plug.Conn.t(), Plug.opts() -> Plug.Conn.t()),
           response_code_on_blocked: integer(),
           response_body_on_blocked: String.t()
@@ -28,17 +28,11 @@ defmodule IpAccessControl.Options do
 
   def default(option)
 
-  def default(:on_blocked) do
-    @on_blocked
-  end
+  def default(:on_blocked), do: @on_blocked
 
-  def default(:response_code_on_blocked) do
-    @response_code_on_blocked
-  end
+  def default(:response_code_on_blocked), do: @response_code_on_blocked
 
-  def default(:response_body_on_blocked) do
-    @response_body_on_blocked
-  end
+  def default(:response_body_on_blocked), do: @response_body_on_blocked
 
   @doc """
   Pre-processes keyword options. Where possible, function resolution will be
@@ -119,9 +113,7 @@ defmodule IpAccessControl.Options do
     end
   end
 
-  defp unpack(options, option) do
-    Map.fetch!(options, option)
-  end
+  defp unpack(options, option), do: Map.fetch!(options, option)
 
   defp evaluate(:allow, allow_list) do
     allow_list
@@ -129,7 +121,5 @@ defmodule IpAccessControl.Options do
     |> BitwiseIp.Blocks.optimize()
   end
 
-  defp evaluate(_option, value) do
-    value
-  end
+  defp evaluate(_option, value), do: value
 end

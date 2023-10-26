@@ -15,34 +15,23 @@ defmodule IpAccessControl.OptionsTest do
   defmodule Complete do
     @moduledoc false
 
-    def ip_access_allow_list do
-      ["1.2.3.4", "1:2:3::4"]
-    end
-
-    def ip_access_on_blocked(conn, _options) do
-      Plug.Conn.send_resp(conn, 321, "Contact!")
-    end
+    def ip_access_allow_list, do: ["1.2.3.4", "1:2:3::4"]
+    def ip_access_on_blocked(conn, _options), do: Plug.Conn.send_resp(conn, 321, "Contact!")
   end
 
   defmodule AllowOnly do
     @moduledoc false
 
-    def ip_access_allow_list do
-      ["1:2:3::4", "1.2.3.4"]
-    end
+    def ip_access_allow_list, do: ["1:2:3::4", "1.2.3.4"]
   end
 
   defmodule OnBlockedOnly do
-    def ip_access_on_blocked(conn, _options) do
-      Plug.Conn.send_resp(conn, 500, "Server Error")
-    end
+    def ip_access_on_blocked(conn, _options), do: Plug.Conn.send_resp(conn, 500, "Server Error")
   end
 
   describe "pack/1" do
     test "Fails if :allow is missing" do
-      assert_raise KeyError, fn ->
-        Options.pack([])
-      end
+      assert_raise KeyError, fn -> Options.pack([]) end
     end
 
     test "skips unknown options" do
@@ -248,7 +237,5 @@ defmodule IpAccessControl.OptionsTest do
     end
   end
 
-  def test_allow_list do
-    ["1.2.3.4"]
-  end
+  def test_allow_list, do: ["1.2.3.4"]
 end

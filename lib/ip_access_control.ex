@@ -120,9 +120,7 @@ defmodule IpAccessControl do
 
   @doc "Initialize the plug with options."
   @spec init(IpAccessControl.Options.input_config()) :: IpAccessControl.Options.config()
-  def init(options) do
-    IpAccessControl.Options.pack(options)
-  end
+  def init(options), do: IpAccessControl.Options.pack(options)
 
   @spec call(Conn.t(), IpAccessControl.Options.config()) :: Conn.t()
   def call(conn, options) do
@@ -138,9 +136,9 @@ defmodule IpAccessControl do
   end
 
   @spec ip_access_on_blocked(Conn.t(), IpAccessControl.Options.config()) :: Conn.t()
-  def ip_access_on_blocked(conn, options) do
-    Conn.send_resp(conn, options[:response_code_on_blocked], options[:response_body_on_blocked])
-  end
+  def ip_access_on_blocked(conn, options),
+    do:
+      Conn.send_resp(conn, options[:response_code_on_blocked], options[:response_body_on_blocked])
 
   @doc """
   Returns `true` if the remote IP is in the given allow list. The remote IP
@@ -157,32 +155,18 @@ defmodule IpAccessControl do
   """
   @spec allowed?(
           Conn.t() | binary() | :inet.ip_address() | nil | BitwiseIp.t(),
-          [binary(), ...] | (() -> [binary(), ...]) | ip_block_list() | nil
+          [binary(), ...] | (-> [binary(), ...]) | ip_block_list() | nil
         ) ::
           boolean
-  def allowed?(_, []) do
-    false
-  end
+  def allowed?(_, []), do: false
+  def allowed?(_, nil), do: false
+  def allowed?(nil, _), do: false
+  def allowed?("", _), do: false
 
-  def allowed?(_, nil) do
-    false
-  end
+  def allowed?(remote_ip, allow_fn) when is_function(allow_fn, 0),
+    do: allowed?(remote_ip, allow_fn.())
 
-  def allowed?(nil, _) do
-    false
-  end
-
-  def allowed?("", _) do
-    false
-  end
-
-  def allowed?(remote_ip, allow_fn) when is_function(allow_fn, 0) do
-    allowed?(remote_ip, allow_fn.())
-  end
-
-  def allowed?(%Conn{remote_ip: remote_ip}, allow_list) do
-    allowed?(remote_ip, allow_list)
-  end
+  def allowed?(%Conn{remote_ip: remote_ip}, allow_list), do: allowed?(remote_ip, allow_list)
 
   def allowed?(remote_ip, allow_list) when is_binary(remote_ip) do
     case BitwiseIp.parse(remote_ip) do
@@ -191,17 +175,13 @@ defmodule IpAccessControl do
     end
   end
 
-  def allowed?(remote_ip, allow_list) when is_tuple(remote_ip) do
-    allowed?(BitwiseIp.encode(remote_ip), allow_list)
-  end
+  def allowed?(remote_ip, allow_list) when is_tuple(remote_ip),
+    do: allowed?(BitwiseIp.encode(remote_ip), allow_list)
 
-  def allowed?(%BitwiseIp{} = remote_ip, allow_list) do
-    BitwiseIp.Blocks.member?(parse_allow_list(allow_list), remote_ip)
-  end
+  def allowed?(%BitwiseIp{} = remote_ip, allow_list),
+    do: BitwiseIp.Blocks.member?(parse_allow_list(allow_list), remote_ip)
 
-  def allowed?(_, _) do
-    false
-  end
+  def allowed?(_, _), do: false
 
   @doc false
   def parse_allow_list(list) do
