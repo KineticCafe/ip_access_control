@@ -1,5 +1,5 @@
 %{
-  "bitwise_ip": {:hex, :bitwise_ip, "1.0.0", "0193c618d078ae606cf13194ae40cb9709b7de3e5e07a3e58c1acd7423db1351", [:mix], [], "hexpm", "87436527b22c3b579919031b732bd647c0ae4356bdd50f49258baafd2095d18d"},
+  "bitwise_ip": {:hex, :bitwise_ip, "1.1.0", "9942e03eddf6546dd79fd3c58a5630e22e149a927c7538f20b75ba4a6783d040", [:mix], [], "hexpm", "b414e8a9d3874a3c753ae52a5539ec29e5a31933b8b180b14fe9476e0ba5dea2"},
   "bunt": {:hex, :bunt, "0.2.1", "e2d4792f7bc0ced7583ab54922808919518d0e57ee162901a16a1b6664ef3b14", [:mix], [], "hexpm", "a330bfb4245239787b15005e66ae6845c9cd524a288f0d141c148b02603777a5"},
   "credo": {:hex, :credo, "1.7.1", "6e26bbcc9e22eefbff7e43188e69924e78818e2fe6282487d0703652bc20fd62", [:mix], [{:bunt, "~> 0.2.1", [hex: :bunt, repo: "hexpm", optional: false]}, {:file_system, "~> 0.2.8", [hex: :file_system, repo: "hexpm", optional: false]}, {:jason, "~> 1.0", [hex: :jason, repo: "hexpm", optional: false]}], "hexpm", "e9871c6095a4c0381c89b6aa98bc6260a8ba6addccf7f6a53da8849c748a58a2"},
   "dialyxir": {:hex, :dialyxir, "1.4.2", "764a6e8e7a354f0ba95d58418178d486065ead1f69ad89782817c296d0d746a5", [:mix], [{:erlex, ">= 0.2.6", [hex: :erlex, repo: "hexpm", optional: false]}], "hexpm", "516603d8067b2fd585319e4b13d3674ad4f314a5902ba8130cd97dc902ce6bbd"},
