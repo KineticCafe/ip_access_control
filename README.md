@@ -8,8 +8,7 @@ If the request IP is not allowed, the specified response code and body will be
 added to the Plug.Conn and the chain will be halted. Otherwise, the plug chain
 will continue.
 
-Documentation can be found at
-[https://hexdocs.pm/ip_access_control][hexdocs].
+Documentation can be found at <https://hexdocs.pm/ip_access_control>.
 
 ## Installation
 
@@ -25,12 +24,6 @@ def deps do
   ]
 end
 ```
-
-## Community and Contributing
-
-We welcome your contributions, as described in [Contributing.md][]. Like all
-Kinetic Cafe [open source projects][], is under the Kinetic Cafe Open Source
-[Code of Conduct][kccoc].
 
 [build status svg]: https://travis-ci.org/KineticCafe/bamboo_elastic_email.svg?branch=master
 [build status]: https://travis-ci.org/KineticCafe/bamboo_elastic_email

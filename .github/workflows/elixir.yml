@@ -22,15 +22,6 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - elixir: '1.10'
-            otp: '21'
-            os: ubuntu-20.04
-          - elixir: '1.11'
-            otp: '21'
-            os: ubuntu-20.04
-          - elixir: '1.11'
-            otp: '23'
-            os: ubuntu-20.04
           - elixir: '1.12'
             otp: '24'
             os: ubuntu-22.04
@@ -42,6 +33,15 @@ jobs:
             os: ubuntu-22.04
           - elixir: '1.15'
             otp: '26'
+            os: ubuntu-22.04
+          - elixir: '1.16'
+            otp: '26'
+            os: ubuntu-22.04
+          - elixir: '1.17'
+            otp: '27'
+            os: ubuntu-24.04
+          - elixir: '1.18'
+            otp: '27'
             os: ubuntu-22.04
             check_formatted: true
             warnings_as_errors: true
@@ -90,5 +90,5 @@ jobs:
           restore-keys: |
             plts@elixir-${{ steps.install.outputs.elixir-version }}-otp-${{ steps.install.outputs.otp-version }}-mix-
 
-      - run: mix dialyzer
+      - run: mix dialyzer --format github
         if: matrix.dialyzer

@@ -1,6 +1,7 @@
 defmodule IpAccessControlTest do
   use ExUnit.Case, async: true
-  use Plug.Test
+
+  import Plug.Test
 
   @data [
     %{allow: "10.0.0.0", good: ["10.0.0.0"], bad: ["10.0.0.1"]},

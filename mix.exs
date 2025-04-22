@@ -64,7 +64,7 @@ defmodule IpAccessControlPlug.MixProject do
     ]
   end
 
-  if Version.compare(System.version(), "1.15.0") == :lt do
+  if Version.compare(System.version(), "1.18.0") == :lt do
     defp dev_deps, do: []
   else
     defp dev_deps do
