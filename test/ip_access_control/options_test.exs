@@ -110,7 +110,7 @@ defmodule IpAccessControl.OptionsTest do
       packed =
         Options.pack(
           module: Complete,
-          allow: &AllowOnly.ip_access_allow_list/2,
+          allow: &AllowOnly.ip_access_allow_list/0,
           on_blocked: &OnBlockedOnly.ip_access_on_blocked/2
         )
 
@@ -215,7 +215,7 @@ defmodule IpAccessControl.OptionsTest do
       {packed, unpacked} =
         pack_unpack(
           module: Complete,
-          allow: &AllowOnly.ip_access_allow_list/2,
+          allow: &AllowOnly.ip_access_allow_list/0,
           on_blocked: &OnBlockedOnly.ip_access_on_blocked/2
         )
 
