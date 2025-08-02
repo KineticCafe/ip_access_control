@@ -1,9 +1,12 @@
+.ez
+/.elixir_ls/
+/.fetch
 /_build/
 /cover/
 /deps/
 /doc/
-/.fetch
+/tmp/
+enviable-*.tar
 erl_crash.dump
-*.ez
-ip_access_control_plug-*.tar
-priv/plts/
+/priv/plts/*.plt
+/priv/plts/*.plt.hash

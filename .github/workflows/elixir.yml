@@ -5,10 +5,13 @@ on:
   push:
     branches:
       - main
-  merge_group:
-    types:
-      - checks_requested
   workflow_dispatch:
+
+permissions: {}
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
 
 jobs:
   elixir-ci:
@@ -19,15 +22,9 @@ jobs:
       LC_CTYPE: en_US.UTF-8
 
     strategy:
-      fail-fast: false
+      fail-fast: true
       matrix:
         include:
-          - elixir: '1.12'
-            otp: '24'
-            os: ubuntu-22.04
-          - elixir: '1.13'
-            otp: '24'
-            os: ubuntu-22.04
           - elixir: '1.14'
             otp: '25'
             os: ubuntu-22.04
@@ -39,7 +36,7 @@ jobs:
             os: ubuntu-22.04
           - elixir: '1.17'
             otp: '27'
-            os: ubuntu-24.04
+            os: ubuntu-22.04
           - elixir: '1.18'
             otp: '27'
             os: ubuntu-22.04
@@ -47,18 +44,35 @@ jobs:
             warnings_as_errors: true
             dialyzer: true
             credo: true
+            coveralls: true
 
     runs-on: ${{ matrix.os }}
 
+    permissions:
+      contents: read
+
     steps:
-      - uses: actions/checkout@v4
-      - uses: erlef/setup-elixir@v1
+      - name: Harden Runner
+        uses: step-security/harden-runner@ec9f2d5744a09debf3a187a3f4f675c53b671911 # v2.13.0
+        with:
+          egress-policy: block
+          allowed-endpoints: >
+            builds.hex.pm:443
+            coveralls.io:443
+            github.com:443
+            repo.hex.pm:443
+
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          persist-credentials: false
+
+      - uses: erlef/setup-beam@e6d7c94229049569db56a7ad5a540c051a010af9 # v1.20.4
         id: install
         with:
           otp-version: ${{ matrix.otp }}
           elixir-version: ${{ matrix.elixir }}
 
-      - uses: actions/cache@v4
+      - uses: actions/cache@5a3ec84eff668545956fd18022155c47e93e2684 # v4.2.3
         with:
           key: builds@elixir-${{ steps.install.outputs.elixir-version }}-otp-${{ steps.install.outputs.otp-version }}-mix-${{ hashFiles('mix.lock') }}
           path: |
@@ -76,13 +90,18 @@ jobs:
       - run: mix compile
         if: ${{ !matrix.warnings_as_errors }}
 
+      - run: mix coveralls.github
+        if: ${{ matrix.coveralls }}
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+
       - run: mix test
+        if: ${{ !matrix.coveralls }}
 
       - run: mix credo --strict
         if: matrix.credo
 
-      - uses: actions/cache@v4
-        if: matrix.dialyzer
+      - uses: actions/cache@5a3ec84eff668545956fd18022155c47e93e2684 # v4.2.3
         with:
           key: plts@elixir-${{ steps.install.outputs.elixir-version }}-otp-${{ steps.install.outputs.otp-version }}-mix-${{ hashFiles('mix.lock') }}
           path: |

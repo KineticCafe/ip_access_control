@@ -1,9 +1,9 @@
 defmodule IpAccessControl.Options do
+  @moduledoc "Manage IpAccessControl options"
+
   @on_blocked {IpAccessControl, :ip_access_on_blocked}
   @response_code_on_blocked 401
   @response_body_on_blocked "Not Authenticated"
-
-  @moduledoc "Manage IpAccessControl options"
 
   @type input_config :: [
           module: module,

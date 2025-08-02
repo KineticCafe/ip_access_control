@@ -3,27 +3,35 @@ defmodule IpAccessControlPlug.MixProject do
 
   use Mix.Project
 
+  @app :ip_access_control
   @project_url "https://github.com/KineticCafe/ip_access_control"
-  @version "1.0.1"
+  @version "1.1.0"
 
   def project do
     [
-      app: :ip_access_control,
+      app: @app,
       description: "Restrict access to a Plug-based application using IP and CIDR access lists.",
       version: @version,
       source_url: @project_url,
-      homepage_url: @project_url,
       name: "IP Access Control Plug",
-      elixir: "~> 1.8",
+      elixir: "~> 1.14",
       build_embedded: Mix.env() == :prod,
       start_permanent: Mix.env() == :prod,
+      deps: deps(),
       package: package(),
+      docs: docs(),
+      preferred_cli_env: [
+        coveralls: :test,
+        "coveralls.github": :test,
+        "coveralls.html": :test
+      ],
+      test_coverage: test_coverage(),
       elixirc_paths: elixirc_paths(Mix.env()),
       dialyzer: [
-        plt_file: {:no_warn, "priv/plts/dialyzer.plt"}
-      ],
-      deps: deps() ++ dev_deps(),
-      docs: docs()
+        plt_add_apps: [:mix],
+        plt_local_path: "priv/plts/project.plt",
+        plt_core_path: "priv/plts/core.plt"
+      ]
     ]
   end
 
@@ -31,48 +39,51 @@ defmodule IpAccessControlPlug.MixProject do
     [extra_applications: [:logger]]
   end
 
-  # Specifies which paths to compile per environment.
-  # defp elixirc_paths(:test), do: ["lib", "test/support"]
-  defp elixirc_paths(_) do
-    ["lib"]
-  end
+  defp elixirc_paths(:test), do: ["lib", "test/support"]
+  defp elixirc_paths(_), do: ["lib"]
 
   defp package do
     [
       maintainers: ["Austin Ziegler", "Kinetic Commerce"],
       licenses: ["MIT"],
+      files: ~w(lib .formatter.exs mix.exs *.md),
       links: %{
-        "Github" => @project_url
+        "Source" => @project_url,
+        "Issues" => @project_url <> "/issues"
       }
-    ]
-  end
-
-  defp docs do
-    [
-      source_ref: "v#{@version}",
-      canonical: "http://hexdocs.pm/ip_access_control",
-      main: "IpAccessControl",
-      source_url: @project_url,
-      extras: ["README.md", "Changelog.md", "Contributing.md", "Licence.md"]
     ]
   end
 
   defp deps do
     [
+      {:bitwise_ip, "~> 1.0"},
       {:plug, "~> 1.0"},
-      {:bitwise_ip, "~> 1.0"}
+      {:credo, "~> 1.0", only: [:dev, :test], runtime: false},
+      {:dialyxir, "~> 1.4", only: [:dev, :test], runtime: false},
+      {:excoveralls, "~> 0.18", only: [:test]},
+      {:ex_doc, "~> 0.30", only: [:dev, :test], runtime: false},
+      {:quokka, "~> 2.6", only: [:dev, :test], runtime: false}
     ]
   end
 
-  if Version.compare(System.version(), "1.18.0") == :lt do
-    defp dev_deps, do: []
-  else
-    defp dev_deps do
-      [
-        {:credo, "~> 1.0", only: [:dev], runtime: false},
-        {:dialyxir, "~> 1.4", only: [:dev], runtime: false},
-        {:ex_doc, "~> 0.30", only: [:dev], runtime: false}
-      ]
-    end
+  defp docs do
+    [
+      main: "IpAccessControl",
+      extras: [
+        "README.md",
+        "CONTRIBUTING.md": [filename: "CONTRIBUTING.md", title: "Contributing"],
+        "CHANGELOG.md": [filename: "CHANGELOG.md", title: "CHANGELOG"],
+        "LICENCE.md": [filename: "LICENCE.md", title: "Licence"]
+      ],
+      source_ref: "v#{@version}",
+      source_url: @project_url,
+      canonical: "https://hexdocs.pm/#{@app}"
+    ]
+  end
+
+  defp test_coverage do
+    [
+      tool: ExCoveralls
+    ]
   end
 end

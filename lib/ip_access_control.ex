@@ -1,6 +1,4 @@
 defmodule IpAccessControl do
-  @behaviour Plug
-
   @moduledoc """
   This Plug restricts requests so that they must come from the range of IP addresses
   specified in the pipeline config. A request's IP address is deemed to be present as
@@ -151,6 +149,8 @@ defmodule IpAccessControl do
   [1]: https://adam-p.ca/blog/2022/03/x-forwarded-for/
   """
 
+  @behaviour Plug
+
   alias Plug.Conn
 
   @typep ip_block_list :: BitwiseIp.Blocks.t()
@@ -174,8 +174,7 @@ defmodule IpAccessControl do
 
   @spec ip_access_on_blocked(Conn.t(), IpAccessControl.Options.config()) :: Conn.t()
   def ip_access_on_blocked(conn, options),
-    do:
-      Conn.send_resp(conn, options[:response_code_on_blocked], options[:response_body_on_blocked])
+    do: Conn.send_resp(conn, options[:response_code_on_blocked], options[:response_body_on_blocked])
 
   @doc """
   Returns `true` if the remote IP is in the given allow list. The remote IP
@@ -200,8 +199,7 @@ defmodule IpAccessControl do
   def allowed?(nil, _), do: false
   def allowed?("", _), do: false
 
-  def allowed?(remote_ip, allow_fn) when is_function(allow_fn, 0),
-    do: allowed?(remote_ip, allow_fn.())
+  def allowed?(remote_ip, allow_fn) when is_function(allow_fn, 0), do: allowed?(remote_ip, allow_fn.())
 
   def allowed?(%Conn{remote_ip: remote_ip}, allow_list), do: allowed?(remote_ip, allow_list)
 
@@ -212,8 +210,7 @@ defmodule IpAccessControl do
     end
   end
 
-  def allowed?(remote_ip, allow_list) when is_tuple(remote_ip),
-    do: allowed?(BitwiseIp.encode(remote_ip), allow_list)
+  def allowed?(remote_ip, allow_list) when is_tuple(remote_ip), do: allowed?(BitwiseIp.encode(remote_ip), allow_list)
 
   def allowed?(%BitwiseIp{} = remote_ip, allow_list),
     do: BitwiseIp.Blocks.member?(parse_allow_list(allow_list), remote_ip)
