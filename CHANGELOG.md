@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## 1.1.0
+
+- Modified minimum supported Elixir version to 1.14.
+
+- Added hardened workflows.
+
 ## 1.0.1
 
 - Modified GitHub Actions testing range, 1.10 to 1.15. The code is still
@@ -13,8 +19,7 @@
 
 - Added Dependabot configuration and automerge.
 
-- Updated dependencies to the latest versions and verified dialyzer
-  cleanliness.
+- Updated dependencies to the latest versions and verified dialyzer cleanliness.
 
 - Undid the formatting when I enabled `force_do_end_blocks: true` in
   `.formatter.exs`.
