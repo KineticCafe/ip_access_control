@@ -46,7 +46,7 @@ defmodule IpAccessControlPlug.MixProject do
     [
       maintainers: ["Austin Ziegler", "Kinetic Commerce"],
       licenses: ["MIT"],
-      files: ~w(lib .formatter.exs mix.exs *.md),
+      files: ~w(lib .formatter.exs mix.exs *.md licences/dco.txt),
       links: %{
         "Source" => @project_url,
         "Issues" => @project_url <> "/issues"
