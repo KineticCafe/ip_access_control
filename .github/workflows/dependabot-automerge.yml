@@ -3,15 +3,27 @@ name: Dependabot auto-merge
 on:
   pull_request:
 
-permissions:
-  contents: write
-  pull-requests: write
+permissions: {}
 
 jobs:
   dependabot-automerge:
+    name: Dependabot Auto-merge
     runs-on: ubuntu-latest
 
+    permissions:
+      contents: write
+      pull-requests: write
+
     steps:
-      - uses: KineticCafe/actions/dependabot-automerge@v2.0
+      - name: Harden the runner
+        uses: step-security/harden-runner@ec9f2d5744a09debf3a187a3f4f675c53b671911 # v2.13.0
+        with:
+          egress-policy: block
+          disable-sudo: true
+          allowed-endpoints: >
+            api.github.com:443
+            github.com:443
+
+      - uses: KineticCafe/actions/dependabot-automerge@49ed4df56156946c36e092976e44aac053423eca # v2.0.2
         with:
           update-type: minor
