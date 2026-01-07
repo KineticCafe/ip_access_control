@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## 1.2.0
+
+- Added support for `allow` functions specified as `{m, f, a}` tuples.
+- Added support for the `module` option to treat the `call/2` implementation of
+  a plug as the implementation for `on_blocked`.
+
 ## 1.1.0
 
 - Modified minimum supported Elixir version to 1.14.
@@ -13,7 +19,7 @@
   telemetry; they have been soft-deprecated and have been removed from the test
   matrix.
 
-  NOTE: credo, dialyxir, and ex_doc are only configured for 1.15 or later.
+  NOTE: credo, dialyxir, and ex\_doc are only configured for 1.15 or later.
 
 - Added DCO checking (we will require sign-offs moving forward).
 

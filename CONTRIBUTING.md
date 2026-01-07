@@ -7,12 +7,11 @@ in an [issue][issues].
 Before contributing patches, please read the [Licence](./LICENCE.md).
 
 IpAccessControl is governed under the
-[Kinetic Commerce Open Source Code of Conduct][cccoc], derived from the
-Contributor Covenant.
+[Contributor Covenant Code of Conduct][cccoc].
 
 ## Code Guidelines
 
-We have several guidelines to contributing code through pull requests:
+I have several guidelines to contributing code through pull requests:
 
 - All code changes require tests. In most cases, this will be added or updated
   unit tests. I use [ExUnit][exunit].
@@ -25,7 +24,7 @@ We have several guidelines to contributing code through pull requests:
 - Proposed changes should be on a thoughtfully-named topic branch and organized
   into logical commit chunks as appropriate.
 
-- Use [Conventional Commits][conventional] with our
+- Use [Conventional Commits][conventional] with my
   [conventions](#commit-conventions).
 
 - Versions must not be updated in pull requests.
@@ -40,21 +39,16 @@ We have several guidelines to contributing code through pull requests:
 - All GitHub Actions checks marked as required must pass before a pull request
   may be accepted and merged.
 
-## LLM-Generated Contribution Policy
+## AI Contribution Policy
 
-IpAccessControl contributions must be well understood by the submitter and that,
-especially for pull requests, the developer can attest to the
-[Developer Certificate of Origin][dco] for each pull request (see
-[LICENCE](LICENCE.md)).
+IpAccessControl contributions must be well understood by the submitter and that
+the developer can attest to the [Developer Certificate of Origin][dco] for each
+pull request (see [LICENCE](LICENCE.md)).
 
-If LLM assistance is used in writing pull requests, this must be documented in
-the commit message and pull request. If there is evidence of LLM assistance
-without such declaration, the pull request **will be declined**.
+Any contribution (bug, feature request, or pull request) that uses undeclared AI
+output will be rejected.
 
-Any contribution (bug, feature request, or pull request) that uses unreviewed
-LLM output will be rejected.
-
-### Commit Conventions
+## Commit Conventions
 
 IpAccessControl has adopted a variation of the Conventional Commits format for
 commit messages. The following types are permitted:
@@ -96,14 +90,14 @@ required metadata trailers are:
   [`plug_ip_whitelist`][plug_ip_whitelist] by Forward Financing.
 
 [cbeams]: https://cbea.ms/git-commit/
-[cccoc]: https://github.com/KineticCafe/ip_access_control?tab=coc-ov-file#readme
+[cccoc]: ./CODE_OF_CONDUCT.md
 [conventional]: https://www.conventionalcommits.org/en/v1.0.0/
 [credo]: https://github.com/rrrene/credo
 [dco]: licences/dco.txt
 [exunit]: https://hexdocs.pm/ex_unit/ExUnit.html
-[issues]: https://github.com/halostatue/enviable/issues
+[issues]: https://github.com/KineticCafe/ip_access_control/issues
 [plug_ip_whitelist]: https://github.com/ForwardFinancing/plug_ip_whitelist
 [quokka]: https://github.com/emkguts/quokka
-[tpope-qcm]: http://tbaggery.com/2008/04/19/a-note-about-git-commit-messages.html
+[tpope-qcm]: https://tbaggery.com/2008/04/19/a-note-about-git-commit-messages.html
 [trailers1]: https://git-scm.com/docs/git-interpret-trailers
 [trailers2]: https://git-scm.com/docs/git-commit#Documentation/git-commit.txt---trailerlttokengtltvaluegt

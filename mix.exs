@@ -5,7 +5,7 @@ defmodule IpAccessControlPlug.MixProject do
 
   @app :ip_access_control
   @project_url "https://github.com/KineticCafe/ip_access_control"
-  @version "1.1.0"
+  @version "1.2.0"
 
   def project do
     [
@@ -14,17 +14,12 @@ defmodule IpAccessControlPlug.MixProject do
       version: @version,
       source_url: @project_url,
       name: "IP Access Control Plug",
-      elixir: "~> 1.14",
+      elixir: "~> 1.15",
       build_embedded: Mix.env() == :prod,
       start_permanent: Mix.env() == :prod,
       deps: deps(),
       package: package(),
       docs: docs(),
-      preferred_cli_env: [
-        coveralls: :test,
-        "coveralls.github": :test,
-        "coveralls.html": :test
-      ],
       test_coverage: test_coverage(),
       elixirc_paths: elixirc_paths(Mix.env()),
       dialyzer: [
@@ -39,6 +34,18 @@ defmodule IpAccessControlPlug.MixProject do
     [extra_applications: [:logger]]
   end
 
+  def cli do
+    [
+      preferred_envs: [
+        coveralls: :test,
+        "coveralls.detail": :test,
+        "coveralls.github": :test,
+        "coveralls.html": :test,
+        "coveralls.json": :test
+      ]
+    ]
+  end
+
   defp elixirc_paths(:test), do: ["lib", "test/support"]
   defp elixirc_paths(_), do: ["lib"]
 
@@ -46,7 +53,7 @@ defmodule IpAccessControlPlug.MixProject do
     [
       maintainers: ["Austin Ziegler", "Kinetic Commerce"],
       licenses: ["MIT"],
-      files: ~w(lib .formatter.exs mix.exs *.md licences/dco.txt),
+      files: ~w(lib .formatter.exs mix.exs *.md licences),
       links: %{
         "Source" => @project_url,
         "Issues" => @project_url <> "/issues"
@@ -56,12 +63,12 @@ defmodule IpAccessControlPlug.MixProject do
 
   defp deps do
     [
-      {:bitwise_ip, "~> 1.0"},
+      {:bitwise_ip, "~> 1.2"},
       {:plug, "~> 1.0"},
       {:credo, "~> 1.0", only: [:dev, :test], runtime: false},
       {:dialyxir, "~> 1.4", only: [:dev, :test], runtime: false},
       {:excoveralls, "~> 0.18", only: [:test]},
-      {:ex_doc, "~> 0.30", only: [:dev, :test], runtime: false},
+      {:ex_doc, "~> 0.29", only: [:dev, :test], runtime: false},
       {:quokka, "~> 2.6", only: [:dev, :test], runtime: false}
     ]
   end
@@ -72,8 +79,11 @@ defmodule IpAccessControlPlug.MixProject do
       extras: [
         "README.md",
         "CONTRIBUTING.md": [filename: "CONTRIBUTING.md", title: "Contributing"],
+        "CODE_OF_CONDUCT.md": [filename: "CODE_OF_CONDUCT.md", title: "Code of Conduct"],
         "CHANGELOG.md": [filename: "CHANGELOG.md", title: "CHANGELOG"],
-        "LICENCE.md": [filename: "LICENCE.md", title: "Licence"]
+        "LICENCE.md": [filename: "LICENCE.md", title: "Licence"],
+        "licences/dco.txt": [filename: "dco.txt", title: "Developer Certificate of Origin"],
+        "SECURITY.md": [filename: "SECURITY.md", title: "Security Policy"]
       ],
       source_ref: "v#{@version}",
       source_url: @project_url,

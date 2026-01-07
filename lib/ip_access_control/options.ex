@@ -66,7 +66,9 @@ defmodule IpAccessControl.Options do
       nil ->
         options
 
-      module ->
+      module when is_atom(module) ->
+        Code.ensure_loaded!(module)
+
         options =
           if function_exported?(module, :ip_access_allow_list, 0) do
             Keyword.put(options, :allow, {module, :ip_access_allow_list})
@@ -74,16 +76,22 @@ defmodule IpAccessControl.Options do
             options
           end
 
-        if function_exported?(module, :ip_access_on_blocked, 2) do
-          Keyword.put(options, :on_blocked, {module, :ip_access_on_blocked})
-        else
-          options
+        cond do
+          function_exported?(module, :ip_access_on_blocked, 2) ->
+            Keyword.put(options, :on_blocked, {module, :ip_access_on_blocked})
+
+          function_exported?(module, :call, 2) ->
+            Keyword.put(options, :on_blocked, {module, :call})
+
+          true ->
+            options
         end
     end
   end
 
   defp pack(options, :allow) do
     case Keyword.fetch!(options, :allow) do
+      {m, f, a} -> {m, f, a}
       {m, f} -> Function.capture(m, f, 0)
       fun when is_function(fun, 0) -> fun
       value -> evaluate(:allow, value)
@@ -92,7 +100,6 @@ defmodule IpAccessControl.Options do
 
   defp pack(options, :on_blocked = option) do
     case Keyword.get(options, option, default(option)) do
-      nil -> default(option)
       plug when is_atom(plug) -> fn conn, options -> plug.call(conn, plug.init(options)) end
       {m, f} -> Function.capture(m, f, 2)
       fun when is_function(fun, 2) -> fun
@@ -100,15 +107,13 @@ defmodule IpAccessControl.Options do
   end
 
   defp pack(options, option) do
-    case Keyword.get(options, option, default(option)) do
-      nil -> default(option)
-      value -> evaluate(option, value)
-    end
+    evaluate(option, Keyword.get(options, option, default(option)))
   end
 
   defp unpack(options, :allow = option) do
     case Map.fetch!(options, option) do
       fun when is_function(fun, 0) -> evaluate(option, fun.())
+      {m, f, a} -> evaluate(option, apply(m, f, a))
       value -> value
     end
   end
