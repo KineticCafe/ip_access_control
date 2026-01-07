@@ -12,11 +12,20 @@ defmodule IpAccessControl.OptionsTest do
     proto: :v6
   }
 
+  def ip_access_on_blocked(conn, _options), do: Plug.Conn.send_resp(conn, 321, "Contact!")
+
   defmodule Complete do
     @moduledoc false
 
     def ip_access_allow_list, do: ["1.2.3.4", "1:2:3::4"]
     def ip_access_on_blocked(conn, _options), do: Plug.Conn.send_resp(conn, 321, "Contact!")
+  end
+
+  defmodule PlugComplete do
+    @moduledoc false
+
+    def ip_access_allow_list, do: ["1.2.3.4", "1:2:3::4"]
+    def call(conn, _options), do: Plug.Conn.send_resp(conn, 321, "Contact!")
   end
 
   defmodule AllowOnly do
@@ -61,6 +70,11 @@ defmodule IpAccessControl.OptionsTest do
                Options.pack(allow: {Complete, :ip_access_allow_list})[:allow]
     end
 
+    test "allow MFA" do
+      assert {Complete, :ip_access_allow_list, []} ==
+               Options.pack(allow: {Complete, :ip_access_allow_list, []})[:allow]
+    end
+
     test "on_blocked default" do
       assert Function.capture(IpAccessControl, :ip_access_on_blocked, 2) ==
                Options.pack(allow: [])[:on_blocked]
@@ -68,6 +82,14 @@ defmodule IpAccessControl.OptionsTest do
 
     test "on_blocked inline function" do
       assert is_function(Options.pack(allow: [], on_blocked: fn _, _ -> nil end)[:on_blocked], 2)
+    end
+
+    test "on_blocked atom plug" do
+      assert is_function(Options.pack(allow: [], on_blocked: :ip_access_on_blocked)[:on_blocked], 2)
+    end
+
+    test "on_blocked module plug" do
+      assert is_function(Options.pack(allow: [], on_blocked: Complete)[:on_blocked], 2)
     end
 
     test "on_blocked captured function" do
@@ -104,6 +126,12 @@ defmodule IpAccessControl.OptionsTest do
       packed = Options.pack(module: Complete)
       assert Function.capture(Complete, :ip_access_allow_list, 0) == packed[:allow]
       assert Function.capture(Complete, :ip_access_on_blocked, 2) == packed[:on_blocked]
+    end
+
+    test "module: PlugComplete" do
+      packed = Options.pack(module: PlugComplete)
+      assert Function.capture(PlugComplete, :ip_access_allow_list, 0) == packed[:allow]
+      assert Function.capture(PlugComplete, :call, 2) == packed[:on_blocked]
     end
 
     test "module: Complete with allow and on_blocked" do
@@ -162,6 +190,11 @@ defmodule IpAccessControl.OptionsTest do
 
     test "allow MF ref" do
       {_packed, unpacked} = pack_unpack(allow: {Complete, :ip_access_allow_list})
+      assert [@parsed_v4, @parsed_v6] == unpacked[:allow]
+    end
+
+    test "allow MFA" do
+      {_packed, unpacked} = pack_unpack(allow: {Complete, :ip_access_allow_list, []})
       assert [@parsed_v4, @parsed_v6] == unpacked[:allow]
     end
 

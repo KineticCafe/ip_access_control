@@ -11,28 +11,42 @@ defmodule IpAccessControl do
 
   ## Configuration
 
-  There are two main configuration options:
+  - `:allow`: the list of permitted IP addresses or CIDR ranges, which may be configured
+    as a static list or as a function returning the list of IP addresses or CIDR ranges
 
-  - the allow list of IP addresses or CIDR ranges, which may be configured as a static
-    list or as a function returning the list of IP addresses or CIDR ranges; and
+  - `:on_blocked`: a Plug to call when the remote IP address is not allowed; it will be
+    passed the options provided to the IpAccessControl plug. A default handler is called
+    if not provided.
 
-  - a Plug (either module or function) to call when the remote IP address is not allowed.
+  - `:response_code_on_blocked`: The HTTP status code assigned to the response when the
+    request's IP address is not allowed. Used by the default `on_blocked` handler, but may
+    be used by an alternative `:on_blocked` plug. Defaults to `401` if not specified.
 
-  Note that each item in the allow list must be tested in turn, so a smaller list will
-  outperform a larger list. Future versions of this Plug may include a way of caching
-  results.
+  - `:response_body_on_blocked`: The body assigned to the response when the request's IP
+    address is not allowed. Used by the default `on_blocked`, but may be used by an
+    alternative `on_blocked` plug. Defaults to `"Not Authenticated"` if not specified.
+
+  - `:module`: A shorthand configuration for specifying an access module which implements
+    at least one of `ip_access_allow_list/0` (the `:allow` function),
+    `ip_access_on_blocked/2` (the preferred `:on_blocked` function), or `call/2` (an
+    `:on_blocked` plug function).
+
+    This option is only used during the `Plug.init/1` callback and is resolved to the
+    above options.
 
   ### Allow List Configuration
 
   The list of permitted IP addresses or CIDR ranges may be specified using _either_ the
-  `module` option described below _or_ the `allow` parameter.
+  `module` option described below _or_ the `allow` parameter. Each item in the allow list
+  must be tested in turn, so a smaller list will outperform a larger list.
 
   The `allow` parameter must be one of the following:
 
-  - a list of IP addresses or CIDR ranges, or
-  - a 0-arity function that returns a list of IP addresses or CIDR ranges, or
+  - a list of IP addresses or CIDR ranges
+  - a 0-arity function that returns a list of IP addresses or CIDR ranges
   - a `{module, function}` tuple to a 0-arity function that returns a list of IP addresses
-    or CIDR ranges.
+    or CIDR ranges,
+  - a `t:mfa/0` tuple
 
   Formats supported include:
 
@@ -51,6 +65,10 @@ defmodule IpAccessControl do
   def allow, do: ["1.1.1.0/31", "1.1.0.0/24", "127.0.0.0/8"]
 
   plug IpAccessControl, allow: &__MODULE__.allow/0
+
+  plug IpAccessControl, allow: {__MODULE__, :allow}
+
+  plug IpAccessControl, allow: {__MODULE__, :allow, []}
   ```
 
   ### Blocked Action Configuration
@@ -104,23 +122,10 @@ defmodule IpAccessControl do
   plug IpAccessControl, module: EmployeeAccess
   ```
 
-  ## Installation
-
-  Add `ip_access_control` to your dependencies. If your application is running behind
-  a proxy, you will probably need to also include `remote_ip` or a similar "Real" IP
-  discovery library as a dependency.
-
-  ```elixir
-  def deps do
-    {:ip_access_control, "~> 1.0"},
-    {:remote_ip, "~> 1.0"} # Required if behind a proxy
-  end
-  ```
-
   ## Security Note
 
   Adam Pritchard wrote an extensive post on the perils of discovering the
-  ["real" client IP][1]. Because this module is intended for security, you _should_ be
+  ["real" client IP][xff]. Because this module is intended for security, you _should_ be
   behind a proxy that you control or trust and reading the rightmost IP in the derived
   remote IP address list.
 
@@ -146,7 +151,12 @@ defmodule IpAccessControl do
   > _If you use the "real client IP" anywhere in your code or infrastructure, you need to
   > go check right now how you're deriving it._
 
-  [1]: https://adam-p.ca/blog/2022/03/x-forwarded-for/
+  The authors of IpAccessControl have used the [`remote_ip`][remote_ip] plug for resolving
+  IP addresses from proxy headers successfully in the past, but the configuration of that
+  or a similar plug is entirely outside of the purview of this library.
+
+  [remote_ip]: https://hexdocs.pm/remote_ip/
+  [xff]: https://adam-p.ca/blog/2022/03/x-forwarded-for/
   """
 
   @behaviour Plug
@@ -155,7 +165,6 @@ defmodule IpAccessControl do
 
   @typep ip_block_list :: BitwiseIp.Blocks.t()
 
-  @doc "Initialize the plug with options."
   @spec init(IpAccessControl.Options.input_config()) :: IpAccessControl.Options.config()
   def init(options), do: IpAccessControl.Options.pack(options)
 
@@ -177,17 +186,14 @@ defmodule IpAccessControl do
     do: Conn.send_resp(conn, options[:response_code_on_blocked], options[:response_body_on_blocked])
 
   @doc """
-  Returns `true` if the remote IP is in the given allow list. The remote IP
-  address can be provided either as a Plug.Conn.t(), an IP address tuple, or
-  an IP address string.
+  Returns `true` if the remote IP is in the given allow list. The remote IP address can be
+  provided either as a Plug.Conn.t(), an IP address tuple, or an IP address string.
 
-  If the remote IP is provided as a Plug.Conn.t(), the remote IP will be
-  pulled from the Plug.Conn.t()'s `remote_ip`. If the remote IP is provided
-  as a string, this function will return `false` if the IP address cannot be
-  parsed.
+  If the remote IP is provided as a Plug.Conn.t(), the remote IP will be pulled from the
+  Plug.Conn.t()'s `remote_ip`. If the remote IP is provided as a string, this function
+  will return `false` if the IP address cannot be parsed.
 
-  If neither the remote_ip nor allow list are provided, always returns
-  `false`.
+  If neither the `remote_ip` nor allow list are provided, always returns `false`.
   """
   @spec allowed?(
           Conn.t() | binary() | :inet.ip_address() | nil | BitwiseIp.t(),

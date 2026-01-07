@@ -60,6 +60,11 @@ defmodule IpAccessControlTest do
       refute IpAccessControl.allowed?("1 2 3 4", ["1.2.3.4"])
     end
 
+    test "invalid IP address format" do
+      refute IpAccessControl.allowed?(2_130_706_433, ["127.0.0.1"])
+      refute IpAccessControl.allowed?(16_909_060, ["1.2.3.4"])
+    end
+
     for %{allow: allow, good: good, bad: bad} <- @data do
       test "allow #{allow}: good (IP as string)" do
         allowed = [unquote(allow)]
